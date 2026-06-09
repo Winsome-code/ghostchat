@@ -6,7 +6,7 @@
 const { roomExists } = require("../services/roomStore");
 
 const CHARS = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"; // removed ambiguous chars (I, O, 0, 1)
-const CODE_LENGTH = 6;
+const CODE_LENGTH = 4;
 const MAX_ATTEMPTS = 20;
 
 /**
@@ -22,24 +22,21 @@ function randomSegment(length) {
 
 /**
  * Generate a unique room code that does not collide with existing rooms.
- * Format: XXXYYY  (6 chars) or XXX-YYY for display
+ * Format: XXXX (4 chars) — displayed as-is, no dash needed.
  */
 function generateRoomCode() {
   for (let i = 0; i < MAX_ATTEMPTS; i++) {
     const code = randomSegment(CODE_LENGTH);
     if (!roomExists(code)) return code;
   }
-  // Fallback: extend to 8 chars
-  return randomSegment(8);
+  // Fallback: extend to 6 chars if somehow all 4-char codes are taken
+  return randomSegment(6);
 }
 
 /**
- * Format code for display: "ABC123" → "ABC-123"
+ * Format code for display: 4-char codes shown as-is e.g. "AB3K"
  */
 function formatCode(code) {
-  if (code.length === 6) {
-    return `${code.slice(0, 3)}-${code.slice(3)}`;
-  }
   return code;
 }
 
@@ -49,7 +46,7 @@ function formatCode(code) {
 function isValidCodeFormat(code) {
   if (!code || typeof code !== "string") return false;
   const cleaned = code.replace(/-/g, "").toUpperCase();
-  if (cleaned.length < 5 || cleaned.length > 10) return false;
+  if (cleaned.length < 4 || cleaned.length > 8) return false;
   return /^[A-Z0-9]+$/.test(cleaned);
 }
 
