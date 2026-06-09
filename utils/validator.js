@@ -49,7 +49,7 @@ function validateRoomCode(raw) {
     return { valid: false, error: "Room code must be a string." };
   }
   const cleaned = raw.replace(/-/g, "").toUpperCase().trim();
-  if (cleaned.length < 5 || cleaned.length > 10) {
+  if (cleaned.length < 4 || cleaned.length > 8) {
     return { valid: false, error: "Invalid room code length." };
   }
   if (!/^[A-Z0-9]+$/.test(cleaned)) {
